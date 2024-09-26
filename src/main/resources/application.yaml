@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: Notiefy
+  datasource:
+    url: jdbc:postgresql://localhost:5000/notiefy-db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+dgs:
+  graphql:
+    graphiql:
+      enabled: true
+      path: /graphql

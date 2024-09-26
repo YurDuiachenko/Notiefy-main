@@ -1,0 +1,11 @@
+type Query {
+  filterSongByName(name: String): [Song]
+}
+
+type Song {
+  id: String
+  name: String
+  duration: Int
+  year: Int
+  genre: String
+}
