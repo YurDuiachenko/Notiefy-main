@@ -1,0 +1,33 @@
+# Запросы на чтение
+type Query {
+  findAll: [Song]
+  findSongsByName(name: String): [Song]
+  findSongsByYear(year: Int): [Song]
+}
+
+type Song {
+  id: String
+  name: String
+  duration: Int
+  year: Int
+  genre: String
+}
+
+# Запросы на изменение
+type Mutation {
+  addSong(song: SubmittedSong): Song
+}
+
+input SubmittedSong {
+  name: String!
+  year: Int!
+  genre: String!
+  albumId: String
+  musician: Musician!
+}
+
+input Musician {
+  id: String!
+  nickName: String!
+  isGroup: Boolean!
+}

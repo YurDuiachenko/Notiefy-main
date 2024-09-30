@@ -71,6 +71,23 @@ public interface SongService {
      * Отфильтровать песни по имени
      *
      * @param name наименование песни
+     * @return список песен
      */
     List<Song> filterSongsByName(String name);
+
+    /**
+     * Отфильтровать песни по году
+     *
+     * @param year год выпуска песни
+     * @return список песен
+     */
+    List<Song> filterSongsByYear(int year);
+
+    /**
+     * Добавить песню
+     *
+     * @param song песня
+     * @return песню
+     */
+    Song addSong(Song song);
 }

@@ -15,7 +15,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class SongModelAssembler extends RepresentationModelAssemblerSupport<Song, SongModel> {
-
     public SongModelAssembler() {
         super(SongController.class, SongModel.class);
     }

@@ -57,4 +57,16 @@ public class SongServiceImpl implements SongService {
             .filter(song -> song.getName().contains(name))
             .toList();
     }
+
+    @Override
+    public List<Song> filterSongsByYear(int year) {
+        return songRepository.findAll().stream()
+            .filter(song -> song.getYear() == year)
+            .toList();
+    }
+
+    @Override
+    public Song addSong(Song song) {
+        return songRepository.save(song);
+    }
 }
