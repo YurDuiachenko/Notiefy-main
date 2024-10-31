@@ -2,6 +2,7 @@ package com.example.notiefy.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 /*
  * Песня
@@ -10,7 +11,7 @@ import lombok.*;
 @Table(name = "song")
 @Getter
 @Setter
-@Builder
+@Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Song extends BaseEntity{
@@ -37,7 +38,7 @@ public class Song extends BaseEntity{
     /*
      * Исполнитель
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "musician_id")
     private Musician musician;
     /*

@@ -31,6 +31,8 @@ public class SongController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SongModel> getSongById(@PathVariable("id") String songId) {
+
+
         return new ResponseEntity<>(songModelAssembler.toModel(songService.getById(fromString(songId))), OK);
     }
 
@@ -48,5 +50,4 @@ public class SongController {
     public void deleteSongById(@PathVariable("id") String songId) {
         songService.getById(fromString(songId));
     }
-
 }

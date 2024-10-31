@@ -13,9 +13,25 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+  rabbitmq:
+    host: localhost
+    password: guest
+    username: guest
+    port: 5672
+    virtual-host: /
 
 dgs:
   graphql:
     graphiql:
       enabled: true
       path: /graphql
+
+rabbitmq:
+  song-added:
+      queue: songAdded
+      exchange: songAddedExchange
+      key: song.added
+  song-played:
+      queue: songPlayed
+      exchange: songPlayedExchange
+      key: song.played

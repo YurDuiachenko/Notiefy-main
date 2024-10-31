@@ -30,11 +30,11 @@ public class Musician extends BaseEntity {
     /*
      * Альбомы
      */
-    @OneToMany(mappedBy = "musician", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "musician", cascade = CascadeType.MERGE, orphanRemoval = true)
     private List<Album> albums = new ArrayList<>();
     /*
      * Синглы
      */
-    @OneToMany(mappedBy = "musician", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "musician", cascade = CascadeType.REFRESH, orphanRemoval = true)
     private List<Song> singles = new ArrayList<>();
 }

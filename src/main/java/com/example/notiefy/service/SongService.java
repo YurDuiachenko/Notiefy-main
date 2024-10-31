@@ -90,4 +90,20 @@ public interface SongService {
      * @return песню
      */
     Song addSong(Song song);
+
+    /**
+     * Изменить название песни
+     *
+     * @param id идентификатор
+     * @param name название
+     * @return новое название
+     */
+    String changeName(UUID id, String name);
+
+    /**
+     * Удалить песню
+     *
+     * @param id идентификатор
+     */
+    Boolean deleteSong(UUID id);
 }

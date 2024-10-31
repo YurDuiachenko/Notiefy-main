@@ -9,14 +9,17 @@ import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.util.List;
+import java.util.UUID;
 
 @DgsComponent
 @RequiredArgsConstructor
 public class SongDataFetcher {
     private final SongService songService;
     private final ModelMapper modelMapper;
+    private final RabbitTemplate rabbitTemplate;
 
     @DgsQuery
     public List<Song> findSongsByName(@InputArgument String name) {
@@ -41,7 +44,19 @@ public class SongDataFetcher {
 
     @DgsMutation
     public Song addSong(@InputArgument SubmittedSong song) {
-        var songToAdd = songService.addSong(modelMapper.map(song, com.example.notiefy.domain.Song.class));
-        return modelMapper.map(songToAdd, Song.class);
+        var addedSong = songService.addSong(modelMapper.map(song, com.example.notiefy.domain.Song.class));
+        rabbitTemplate.convertAndSend("songAddedExchange", "song.added", addedSong);
+
+        return modelMapper.map(addedSong, Song.class);
+    }
+
+    @DgsMutation
+    public String changeSongName(@InputArgument String id, @InputArgument String name) {
+        return songService.changeName(UUID.fromString(id), name);
+    }
+
+    @DgsMutation
+    public Boolean deleteSong(@InputArgument String songId) {
+        return songService.deleteSong(UUID.fromString(songId));
     }
 }

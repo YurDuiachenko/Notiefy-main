@@ -7,6 +7,4 @@ import lombok.Setter;
 @Setter
 public class Musician {
     private String id;
-    private String nickName;
-    private boolean isGroup;
 }

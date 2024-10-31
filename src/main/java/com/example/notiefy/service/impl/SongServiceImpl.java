@@ -3,6 +3,7 @@ package com.example.notiefy.service.impl;
 import com.example.notiefy.domain.Song;
 import com.example.notiefy.repository.SongRepository;
 import com.example.notiefy.service.SongService;
+import com.example.notiefy.web.rabbitmq.SongPlayedEventSupplier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SongServiceImpl implements SongService {
     private final SongRepository songRepository;
+    private final SongPlayedEventSupplier songPlayedEventSupplier;
 
     @Override
     public List<Song> getAll() {
@@ -33,7 +35,10 @@ public class SongServiceImpl implements SongService {
 
     @Override
     public Song getById(UUID songId) {
-        return songRepository.getReferenceById(songId);
+        var song = songRepository.getReferenceById(songId);
+        songPlayedEventSupplier.supply(song);
+
+        return song;
     }
 
     @Override
@@ -54,19 +59,38 @@ public class SongServiceImpl implements SongService {
     @Override
     public List<Song> filterSongsByName(String name) {
         return songRepository.findAll().stream()
-            .filter(song -> song.getName().contains(name))
-            .toList();
+                .filter(song -> song.getName().contains(name))
+                .toList();
     }
 
     @Override
     public List<Song> filterSongsByYear(int year) {
         return songRepository.findAll().stream()
-            .filter(song -> song.getYear() == year)
-            .toList();
+                .filter(song -> song.getYear() == year)
+                .toList();
     }
 
     @Override
     public Song addSong(Song song) {
         return songRepository.save(song);
+    }
+
+    @Override
+    public String changeName(UUID id, String name) {
+        return songRepository.save(
+                songRepository.findById(id)
+                        .get()
+                        .setName(name)
+        ).getName();
+    }
+
+    @Override
+    public Boolean deleteSong(UUID id) {
+        try {
+            songRepository.deleteById(id);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }

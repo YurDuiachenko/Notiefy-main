@@ -15,7 +15,9 @@ type Song {
 
 # Запросы на изменение
 type Mutation {
+  changeSongName(id: String!, name: String!): String
   addSong(song: SubmittedSong): Song
+  deleteSong(songId: String!) : Boolean
 }
 
 input SubmittedSong {
@@ -28,6 +30,4 @@ input SubmittedSong {
 
 input Musician {
   id: String!
-  nickName: String!
-  isGroup: Boolean!
 }

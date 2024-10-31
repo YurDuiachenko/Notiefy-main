@@ -7,13 +7,13 @@ import com.example.notiefy.web.rest.SongController;
 import com.example.notiefy.web.rest.model.AlbumModel;
 import lombok.NonNull;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
 import static java.lang.String.valueOf;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@Controller
+@Component
 public class AlbumModelAssembler extends RepresentationModelAssemblerSupport<Album, AlbumModel> {
 
     public AlbumModelAssembler() {
