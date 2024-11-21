@@ -35,3 +35,6 @@ rabbitmq:
       queue: songPlayed
       exchange: songPlayedExchange
       key: song.played
+
+server:
+  port: 8081
