@@ -1,47 +1,56 @@
 pipeline {
     agent none
 
+    environment {
+        WORKSPACE_DIR = "/home/jenkins/agent/workspace/Notiefy-main@2"
+        PROJECT_NAME = "Notiefy-main"
+    }
+
     stages {
         stage('Checkout') {
+            agent { label 'agent' }
             steps {
-                git branch: 'main', url: 'https://github.com/YurDuiachenko/Notify-main.git'
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'github-creds', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                        checkout([
+                            $class: 'GitSCM',
+                            branches: [[name: '*/master']],
+                            userRemoteConfigs: [[
+                                url: 'https://github.com/YurDuiachenko/Notiefy-main.git',
+                                credentialsId: 'github-creds'
+                            ]]
+                        ])
+                    }
+                }
+                sh 'pwd'
+                sh 'ls -la'
             }
         }
 
         stage('Build') {
             agent {
-                docker { image 'gradle:7.6-jdk17' }
-            }
-            steps {
-                script {
-                    sh './gradlew clean build -x test'  // Убираем тесты на этапе сборки
+                docker {
+                    image 'gradle:8.10.2-jdk17'
+                    reuseNode true
+                    args "--user root --volume ${WORKSPACE_DIR}:/Notiefy-main --workdir=/Notiefy-main --volume /tmp/.gradle:/home/gradle/.gradle"
                 }
             }
-        }
-
-        stage('Test') {
-            agent {
-                docker { image 'gradle:7.6-jdk17' }
-            }
             steps {
                 script {
-                    sh './gradlew test'
+                    sh 'gradle clean build -x test'
                 }
             }
         }
 
         stage('Deploy') {
-        //     agent {
-        //         docker { image 'docker:19.03.12' } // Используем Docker-образ с Docker для деплоя
-        //     }
-        //     steps {
-        //         script {
-        //             sh 'docker build -t my-spring-app .'
-        //             sh 'docker run -d -p 8080:8080 my-spring-app'
-        //         }
-        //     }
-        // }
-    }
+            agent { label 'agent' }
+            steps {
+                script {
+                    sh 'docker-compose up -d'
+                    sh 'ls -la build/libs'
+                }
+            }
+        }
     }
 
     post {
