@@ -25,7 +25,7 @@ services:
       dockerfile: Dockerfile
     container_name: notiefy-app
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/notiefy-db
       SPRING_DATASOURCE_USERNAME: postgres
