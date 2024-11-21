@@ -18,3 +18,19 @@ services:
       - "5672:5672"
       - "15672:15672"
     restart: always
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: notiefy-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/notiefy-db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres
+      - rabbitmq
+    restart: always
