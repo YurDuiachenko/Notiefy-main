@@ -1,7 +1,8 @@
 package com.example.notiefy.web.rabbitmq;
 
+
 import com.example.notiefy.domain.Song;
-import com.example.notiefy.web.rabbitmq.model.PlayedSong;
+import com.example.notiefy.web.rabbitmq.model.AddedSong;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -10,31 +11,29 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 @Component
 @RequiredArgsConstructor
-public class SongPlayedEventSupplier {
+public class SongAddedEventSupplier {
     private final RabbitTemplate rabbitTemplate;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
 
-    @Value("${rabbitmq.song-played.exchange}")
-    private String songPlayedExchangeName;
-    @Value("${rabbitmq.song-played.key}")
-    private String songPlayedKey;
+    @Value("${rabbitmq.song-added.exchange}")
+    private String songAddedExchangeName;
+    @Value("${rabbitmq.song-added.key}")
+    private String songAddedKey;
 
     /**
-     * Отправить информацию о прослушанной песне
+     * Отправить информацию о добавленной песне
      *
      * @param song песня
      */
     public void supply(Song song) {
-        var playedSong = modelMapper.map(song, PlayedSong.class);
-        playedSong.setTimePlayed(LocalDateTime.now());
+        var addedSong = modelMapper.map(song, AddedSong.class);
+        addedSong.setMusicianNickName(song.getMusician().getNickName());
         try {
-            var playedSongJson = objectMapper.writeValueAsString(playedSong);
-            rabbitTemplate.convertAndSend(songPlayedExchangeName, songPlayedKey, playedSongJson);
+            var addedSongJson = objectMapper.writeValueAsString(addedSong);
+            rabbitTemplate.convertAndSend(songAddedExchangeName, songAddedKey, addedSongJson);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

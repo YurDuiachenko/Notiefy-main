@@ -1,9 +1,13 @@
 package com.example.notiefy.service.impl;
 
+import com.example.notiefy.domain.Musician;
 import com.example.notiefy.domain.Song;
+import com.example.notiefy.repository.MusicianRepository;
 import com.example.notiefy.repository.SongRepository;
 import com.example.notiefy.service.SongService;
+import com.example.notiefy.web.rabbitmq.SongAddedEventSupplier;
 import com.example.notiefy.web.rabbitmq.SongPlayedEventSupplier;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +20,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SongServiceImpl implements SongService {
     private final SongRepository songRepository;
+    private final MusicianRepository musicianRepository;
     private final SongPlayedEventSupplier songPlayedEventSupplier;
+    private final SongAddedEventSupplier songAddedEventSupplier;
 
     @Override
     public List<Song> getAll() {
@@ -72,7 +78,17 @@ public class SongServiceImpl implements SongService {
 
     @Override
     public Song addSong(Song song) {
-        return songRepository.save(song);
+        Musician musician = musicianRepository.findById(song.getMusician().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Musician not found"));
+
+        musician.addSong(song);
+
+        var addedSong = songRepository.save(song);
+        musicianRepository.save(musician);
+
+        songAddedEventSupplier.supply(addedSong);
+
+        return addedSong;
     }
 
     @Override

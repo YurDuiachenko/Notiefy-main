@@ -38,7 +38,7 @@ public class Song extends BaseEntity{
     /*
      * Исполнитель
      */
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "musician_id")
     private Musician musician;
     /*

@@ -35,6 +35,11 @@ public class Musician extends BaseEntity {
     /*
      * Синглы
      */
-    @OneToMany(mappedBy = "musician", cascade = CascadeType.REFRESH, orphanRemoval = true)
+    @OneToMany(mappedBy = "musician", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Song> singles = new ArrayList<>();
+
+    public void addSong(Song song) {
+        song.setMusician(this);
+        this.singles.add(song);
+    }
 }
